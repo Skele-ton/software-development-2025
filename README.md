@@ -8,7 +8,6 @@ A mini web app built with React and Node.js simulating the reaction time test fr
 - Node.js + Express
 - MongoDB
 - Axios + CORS
-- Tailwind CSS
 
 ## Setup Instructions
 

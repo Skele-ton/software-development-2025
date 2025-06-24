@@ -2,15 +2,32 @@ const express = require("express");
 const router = express.Router();
 const Score = require("../models/Score");
 
-// Simple test route
-router.get("/test", (req, res) => {
-	res.json({ message: "Test route works!" });
+router.post("/", async (req, res) => {
+	try {
+		const { score } = req.body;
+
+		if (!score || typeof score !== "number") {
+			return res.status(400).json({ error: "Invalid score provided" });
+		}
+
+		const newScore = new Score({ score });
+		await newScore.save();
+
+		res.status(201).json({
+			success: true,
+			score: newScore.score,
+			timestamp: newScore.timestamp,
+		});
+	} catch (error) {
+		console.error("Error saving score:", error);
+		res.status(500).json({ error: "Server error" });
+	}
 });
 
-// GET average scores
 router.get("/average", async (req, res) => {
 	try {
 		const scores = await Score.find({});
+
 		if (scores.length === 0) {
 			return res.json({ averageScore: 0, highScoreAvg: 0 });
 		}
@@ -19,7 +36,6 @@ router.get("/average", async (req, res) => {
 			scores.reduce((sum, s) => sum + s.score, 0) / scores.length;
 		res.json({
 			averageScore,
-			highScoreAvg: averageScore, // Adjust if you have different logic
 		});
 	} catch (error) {
 		console.error("Error in /average:", error);

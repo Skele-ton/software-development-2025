@@ -39,7 +39,7 @@ router.get("/average", async (req, res) => {
 		});
 	} catch (error) {
 		console.error("Error in /average:", error);
-		res.status(500).json({ error: "Server error" });
+		res.status(500).json({ error: `Server error ${error}` });
 	}
 });
 
